@@ -1263,3 +1263,13 @@ window.db = db;
   </script>
 </body>
 </html>
+<script>
+async function loadItems() {
+const snapshot = await getDocs(collection(db, "inventory"));
+snapshot.forEach(doc => {
+console.log(doc.data());
+});
+}
+
+loadItems();
+</script>
