@@ -1166,26 +1166,39 @@ window.db = db;
       if (!isOthers) brandOther.value = "";
     }
 
-    function addItem() {
-      const item = {
-        id: document.getElementById("id").value.trim(),
-        itemName: document.getElementById("itemName").value.trim(),
-        category: document.getElementById("category").value,
-        brand: (document.getElementById("brand").value === "Others" ? document.getElementById("brandOther").value.trim() : document.getElementById("brand").value.trim()),
-        model: document.getElementById("model").value.trim(),
-        serialNumber: document.getElementById("serialNumber").value.trim(),
-        quantity: Number(document.getElementById("quantity").value),
-        unit: document.getElementById("unit").value.trim() || "pcs",
-        included: Array.from(document.querySelectorAll(".includedPeripheral:checked")).map(el => el.value),
-        location: document.getElementById("location").value.trim(),
-        assignedTo: document.getElementById("assignedTo").value.trim() || "Unassigned",
-        status: document.getElementById("status").value,
-        supplier: document.getElementById("supplier").value.trim(),
-        custodian: document.getElementById("custodian").value.trim(),
-        condition: document.getElementById("condition").value,
-        propertyTag: document.getElementById("propertyTag").value.trim(),
-        purchaseDate: document.getElementById("purchaseDate").value,
-        notes: document.getElementById("notes").value.trim()
+    async function addItem() {
+const item = {
+id: document.getElementById("id").value.trim(),
+itemName: document.getElementById("itemName").value.trim(),
+category: document.getElementById("category").value,
+brand: (document.getElementById("brand").value === "Others"
+? document.getElementById("brandOther").value.trim()
+: document.getElementById("brand").value.trim()),
+model: document.getElementById("model").value.trim(),
+serialNumber: document.getElementById("serialNumber").value.trim(),
+quantity: Number(document.getElementById("quantity").value),
+unit: document.getElementById("unit").value.trim() || "pcs",
+included: Array.from(document.querySelectorAll(".includedPeripheral:checked")).map(el => el.value),
+location: document.getElementById("location").value.trim(),
+assignedTo: document.getElementById("assignedTo").value.trim() || "Unassigned",
+status: document.getElementById("status").value,
+supplier: document.getElementById("supplier").value.trim(),
+custodian: document.getElementById("custodian").value.trim(),
+condition: document.getElementById("condition").value,
+propertyTag: document.getElementById("propertyTag").value.trim(),
+purchaseDate: document.getElementById("purchaseDate").value,
+notes: document.getElementById("notes").value.trim()
+};
+
+if (!item.id || !item.itemName || !item.location) {
+alert("Pakilagyan ang Inventory ID, Item Name, at Location/Office.");
+return;
+}
+
+await addDoc(collection(db, "inventory"), item);
+
+alert("Saved to cloud!");
+}
       };
 
       if (!item.id || !item.itemName || !item.location) {
@@ -1197,7 +1210,46 @@ window.db = db;
         alert("Pakitype ang brand name sa Others.");
         return;
       }
+<script>
+async function saveItemToFirebase(item) {
+  await window.addDoc(window.collection(window.db, "inventory"), item);
+}
 
+  if (!item.id || !item.itemName || !item.location) {
+    alert("Pakilagyan ang Inventory ID, Item Name, at Location/Office.");
+    return;
+  }
+
+  if (document.getElementById("brand").value === "Others" && !document.getElementById("brandOther").value.trim()) {
+    alert("Pakitype ang brand name sa Others.");
+    return;
+  }
+
+  try {
+    await saveItemToFirebase(item);
+    alert("Item saved to cloud successfully!");
+
+    document.getElementById("itemName").value = "";
+    document.getElementById("model").value = "";
+    document.getElementById("serialNumber").value = "";
+    document.getElementById("location").value = "";
+    document.getElementById("quantity").value = "1";
+    document.getElementById("assignedTo").value = "Unassigned";
+    document.getElementById("supplier").value = "";
+    document.getElementById("custodian").value = "";
+    document.getElementById("propertyTag").value = "";
+    document.getElementById("purchaseDate").value = "";
+    document.getElementById("notes").value = "";
+    document.querySelectorAll(".includedPeripheral").forEach(el => el.checked = false);
+
+    if (typeof generateInventoryId === "function") generateInventoryId();
+    if (typeof toggleForm === "function") toggleForm();
+  } catch (error) {
+    console.error(error);
+    alert("Hindi na-save sa Firebase.");
+  }
+}
+</script>
       if (!item.brand) {
         alert("Pumili ng brand.");
         return;
