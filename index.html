@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDrpKSHTsd2jeY6DSaGU_nODoRWLrsq1BA",
+  authDomain: "mdrrmo-inventory.firebaseapp.com",
+  projectId: "mdrrmo-inventory",
+  storageBucket: "mdrrmo-inventory.firebasestorage.app",
+  messagingSenderId: "407658026944",
+  appId: "1:407658026944:web:65b9b708168a09c5cd5a25"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.db = db;
+</script>
+  <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ICT Inventory Management System</title>
