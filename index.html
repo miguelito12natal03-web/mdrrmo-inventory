@@ -2,7 +2,7 @@
 <html lang="en">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDrpKSHTsd2jeY6DSaGU_nODoRWLrsq1BA",
@@ -15,7 +15,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+window.getDocs = getDocs;
 </script>
   <head>
   <meta charset="UTF-8" />
@@ -1166,29 +1170,42 @@ window.db = db;
       if (!isOthers) brandOther.value = "";
     }
 
-    async function addItem() {
-const item = {
-id: document.getElementById("id").value.trim(),
-itemName: document.getElementById("itemName").value.trim(),
-category: document.getElementById("category").value,
-brand: (document.getElementById("brand").value === "Others"
-? document.getElementById("brandOther").value.trim()
-: document.getElementById("brand").value.trim()),
-model: document.getElementById("model").value.trim(),
-serialNumber: document.getElementById("serialNumber").value.trim(),
-quantity: Number(document.getElementById("quantity").value),
-unit: document.getElementById("unit").value.trim() || "pcs",
-included: Array.from(document.querySelectorAll(".includedPeripheral:checked")).map(el => el.value),
-location: document.getElementById("location").value.trim(),
-assignedTo: document.getElementById("assignedTo").value.trim() || "Unassigned",
-status: document.getElementById("status").value,
-supplier: document.getElementById("supplier").value.trim(),
-custodian: document.getElementById("custodian").value.trim(),
-condition: document.getElementById("condition").value,
-propertyTag: document.getElementById("propertyTag").value.trim(),
-purchaseDate: document.getElementById("purchaseDate").value,
-notes: document.getElementById("notes").value.trim()
-};
+   async function addItem() {
+  const item = {
+    id: document.getElementById("id").value.trim(),
+    itemName: document.getElementById("itemName").value.trim(),
+    category: document.getElementById("category").value,
+    brand: (document.getElementById("brand").value === "Others"
+      ? document.getElementById("brandOther").value.trim()
+      : document.getElementById("brand").value.trim()),
+    model: document.getElementById("model").value.trim(),
+    serialNumber: document.getElementById("serialNumber").value.trim(),
+    quantity: Number(document.getElementById("quantity").value),
+    unit: document.getElementById("unit").value.trim() || "pcs",
+    included: Array.from(document.querySelectorAll(".includedPeripheral:checked")).map(el => el.value),
+    location: document.getElementById("location").value.trim(),
+    assignedTo: document.getElementById("assignedTo").value.trim() || "Unassigned",
+    status: document.getElementById("status").value,
+    supplier: document.getElementById("supplier").value.trim(),
+    custodian: document.getElementById("custodian").value.trim(),
+    condition: document.getElementById("condition").value,
+    propertyTag: document.getElementById("propertyTag").value.trim(),
+    purchaseDate: document.getElementById("purchaseDate").value,
+    notes: document.getElementById("notes").value.trim()
+  };
+
+  if (!item.id || !item.itemName || !item.location) {
+    alert("Pakilagyan ang Inventory ID, Item Name, at Location/Office.");
+    return;
+  }
+
+  try {
+    await window.addDoc(window.collection(window.db, "inventory"), item);
+    alert("Saved to cloud!");
+  } catch (error) {
+    console.error("Firebase save error:", error);
+    alert("May error sa pag-save sa cloud.");
+  }
 
 if (!item.id || !item.itemName || !item.location) {
 alert("Pakilagyan ang Inventory ID, Item Name, at Location/Office.");
