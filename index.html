@@ -1206,10 +1206,6 @@ window.getDocs = getDocs;
     console.error("Firebase save error:", error);
     alert("May error sa pag-save sa cloud.");
   }
-
-      if (!item.id || !item.itemName || !item.location) {
-        alert("Pakilagyan ang Inventory ID, Item Name, at Location/Office.");
-        return;
       }
 
       if (document.getElementById("brand").value === "Others" && !document.getElementById("brandOther").value.trim()) {
@@ -1226,9 +1222,6 @@ async function saveItemToFirebase(item) {
     return;
   }
 
-  if (document.getElementById("brand").value === "Others" && !document.getElementById("brandOther").value.trim()) {
-    alert("Pakitype ang brand name sa Others.");
-    return;
   }
 
   try {
