@@ -1207,17 +1207,6 @@ window.getDocs = getDocs;
     alert("May error sa pag-save sa cloud.");
   }
 
-if (!item.id || !item.itemName || !item.location) {
-alert("Pakilagyan ang Inventory ID, Item Name, at Location/Office.");
-return;
-}
-
-await addDoc(collection(db, "inventory"), item);
-
-alert("Saved to cloud!");
-}
-      };
-
       if (!item.id || !item.itemName || !item.location) {
         alert("Pakilagyan ang Inventory ID, Item Name, at Location/Office.");
         return;
